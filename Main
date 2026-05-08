@@ -1,0 +1,433 @@
+import time
+import random
+
+class Rocket:
+    def __init__(self, name):
+        self.name = name
+        self.fuel = 0
+        self.components = {
+            "Engine": False,
+            "Capsule": False,
+            "Navigation": False
+        }
+
+        self.stage = "Earth"
+        self.orbit_stable = False
+        self.moon_scan = False
+
+    def mission_status(self):
+
+        print(" \n === MISSION STATUS MTK ===")
+        print("Rocket:", self.name)
+        print("Stage:", self.stage)
+        print("Fuel:", self.fuel)
+
+        print("Parts status:")
+
+        for part in self.components:
+
+            if self.components[part]:
+                print(part, "- OK")
+
+            else:
+                print(part, "- NEGATIVE")
+
+        # Abort mission if component fails in space
+        if not all(self.components.values()) and self.stage != "Earth":
+
+            print("\nYou have a failed component, aborting mission!")
+
+            self.stage = "Earth"
+
+            time.sleep(3)
+
+            print("MISSION ABORTED!")
+
+        input("Press any key to go back to Mission Control!")
+
+    def fuel_depot(self):
+
+        print("\n === FUEL DEPOT MTK ===")
+
+        amount = int(input("How much liters of fuel do you want to add? "))
+
+        if amount > 0:
+
+            self.fuel += amount
+
+            print("Fuel added. Current fuel:", self.fuel)
+
+        else:
+            print("Invalid fuel amount.")
+
+    def components_depot(self):
+
+        print("\n === COMPONENTS DEPOT MTK ===")
+
+        for part in self.components:
+
+            answer = input(f"Do you have {part}? (y/n): ")
+
+            if answer == "y":
+                self.components[part] = True
+
+        input("Press any key to go back to Mission Control!")
+
+    def stabilize_orbit(self):
+
+        self.orbit_stable = True
+
+        print("\nYour rocket is stable in the orbit.")
+
+        input("Press any key to go back to Mission Control!")
+
+    def system_check(self):
+
+        x = random.randint(0, 100)
+
+        if x < 5:
+            self.components["Navigation"] = False
+
+        if x == 10:
+            self.components["Engine"] = False
+
+        self.mission_status()
+    def moon_scaning(self):
+        surface_scenarios = (
+            "Clear landing site",
+            "Dust detected",
+            "Rocky terrain detected",
+            "Perfect landing site"
+        )
+
+        scenario = random.choice(surface_scenarios)
+        if scenario == "Clear landing site":
+            print("\n The landing site is clear.")
+        elif scenario == "Dust detected":
+            print("\n Dust detected.")
+            self.fuel -= 100
+        elif scenario == "Rocky terrain detected":
+            print("\n Rocky terrain detected.")
+            self.fuel -= 200
+        elif scenario == "Perfect landing site":
+            print("\n Perfect landing site.")
+
+        self.moon_scan = True
+
+
+
+rocket = Rocket("Night Light")
+
+
+def check_components(parts):
+
+    if all(parts.values()):
+
+        print("\nAll parts are OK, ready to fly! Over.")
+
+        return True
+
+    else:
+
+        print("\nParts are missing, abort mission! Over.")
+
+        return False
+
+
+def flight_status(components, fuel):
+
+    if not check_components(components):
+
+        print("\nMissing components!")
+
+        return False
+
+    # Earth launch minimum fuel
+    if fuel < 1000:
+
+        print("\nNot enough fuel!")
+
+        return False
+
+    print("\nFuel status: OK")
+
+    return True
+
+
+def launch_control(components, fuel):
+
+    print("\n === LAUNCH CONTROL MTK ===")
+
+    if rocket.stage == "Earth":
+
+        if flight_status(components, fuel):
+
+            time.sleep(1)
+
+            print("\nFlight status: OK")
+
+            time.sleep(1)
+
+            print("\nLaunch initiated")
+
+            for i in range(3):
+
+                print(".")
+
+                time.sleep(1)
+
+            # Earth launch fuel usage
+            rocket.fuel -= 800
+
+            print("Rocket is now in Earth orbit.")
+
+            rocket.stage = "Earth Orbit"
+
+            print("Remaining fuel:", rocket.fuel)
+
+            input("Press any key to go back to Mission Control!")
+
+        else:
+
+            print("\nFlight status: FAIL")
+
+            print("Launch aborted.")
+
+            input("Press any key to go back to Mission Control!")
+
+    else:
+
+        print("\nNo available rockets to launch!")
+
+        input("Press any key to go back to Mission Control!")
+
+
+def orbit_launch():
+
+    print("\n === ORBIT LAUNCH MTK ===")
+
+    # Component check
+    if not check_components(rocket.components):
+
+        input("Press any key to go back to Mission Control!")
+
+        return
+
+    # Stage check
+    if rocket.stage != "Earth Orbit":
+
+        print("\nRocket is not in Earth Orbit!")
+
+        input("Press any key to go back to Mission Control!")
+
+        return
+
+    # Orbit stability check
+    if not rocket.orbit_stable:
+
+        print("\nOrbit is not stable!")
+
+        input("Press any key to go back to Mission Control!")
+
+        return
+
+    # Fuel check
+    if rocket.fuel < 800:
+
+        print("\nNot enough fuel for Moon transfer!")
+
+        input("Press any key to go back to Mission Control!")
+
+        return
+
+    print("\nFuel levels and orbit stability OK")
+
+    time.sleep(1)
+
+    print("\nMoon transfer initiated")
+
+    for i in range(3):
+
+        print(".")
+
+        time.sleep(1)
+
+    # Moon transfer fuel usage
+    rocket.fuel -= 800
+
+    print("\nRocket is now in Moon orbit.")
+
+    rocket.stage = "Moon Orbit"
+
+    print("Remaining fuel:", rocket.fuel)
+
+    input("Press any key to go back to Mission Control!")
+
+def moon_landing():
+    print("\n === MOON LANDING MTK ===")
+
+    # Component check
+    if not check_components(rocket.components):
+        input("Press any key to go back to Mission Control!")
+
+        return
+
+    # Stage check
+    if rocket.stage != "Moon Orbit":
+        print("\nRocket is not in Moon Orbit!")
+
+        input("Press any key to go back to Mission Control!")
+
+        return
+
+    if not rocket.moon_scan:
+        print("\nMoon surface has not been scanned!")
+
+        input("Press any key to go back to Mission Control!")
+        return
+    # Fuel check
+    if rocket.fuel < 800:
+        print("\nNot enough fuel for Moon landing!")
+
+        input("Press any key to go back to Mission Control!")
+
+        return
+
+    print("\nFuel levels OK")
+
+    time.sleep(1)
+
+    print("\nMoon landing initiated")
+
+    for i in range(3):
+        print(".")
+
+        time.sleep(1)
+
+    # Moon transfer fuel usage
+    rocket.fuel -= 800
+
+    print("\nRocket is now on The Moon surface.")
+    print("======== MISSION COMPLETED ========")
+
+    rocket.stage = "Moon"
+
+    print("Remaining fuel:", rocket.fuel)
+
+    exit()
+
+
+while True:
+
+    while rocket.stage == "Earth":
+
+        print("\n ==== MISSION CONTROL FOR MTK ===")
+        print("1. Show rocket status")
+        print("2. Install components")
+        print("3. Add fuel")
+        print("4. Launch")
+        print("5. Exit")
+
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+
+            rocket.mission_status()
+
+        elif choice == 2:
+
+            rocket.components_depot()
+
+        elif choice == 3:
+
+            rocket.fuel_depot()
+
+        elif choice == 4:
+
+            launch_control(rocket.components, rocket.fuel)
+
+        elif choice == 5:
+
+            print("Mission control closed.")
+
+            break
+
+        else:
+
+            print("Invalid choice.")
+
+    while rocket.stage == "Earth Orbit":
+
+        print("\n==== MISSION CONTROL FOR MTK ===")
+        print("======= STATUS : EARTH ORBIT ======")
+        print("1. Show rocket status")
+        print("2. Stabilize orbit")
+        print("3. System check")
+        print("4. Moon orbit")
+        print("5. Exit")
+
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+
+            rocket.mission_status()
+
+        elif choice == 2:
+
+            rocket.stabilize_orbit()
+
+        elif choice == 3:
+
+            rocket.system_check()
+
+        elif choice == 4:
+
+            orbit_launch()
+
+        elif choice == 5:
+
+            print("Mission control closed.")
+
+            break
+
+        else:
+
+            print("Invalid choice.")
+
+    while rocket.stage == "Moon Orbit":
+
+        print("\n==== MISSION CONTROL FOR MTK ===")
+        print("======= STATUS : MOON ORBIT ======")
+        print("1. Show rocket status")
+        print("2. System check")
+        print("3. Scan Moon surface")
+        print("4. Land on The Moon")
+        print("5. Exit")
+
+        choice = int(input("Enter your choice: "))
+
+        if choice == 1:
+
+            rocket.mission_status()
+
+        elif choice == 2:
+
+            rocket.system_check()
+
+        elif choice == 3:
+
+            rocket.moon_scaning()
+
+        elif choice == 4:
+
+            moon_landing()
+
+        elif choice == 5:
+
+            print("Mission control closed.")
+
+            break
+
+        else:
+
+            print("Invalid choice.")
